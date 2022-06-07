@@ -24,7 +24,7 @@ while True:
             except KeyboardInterrupt:
                 print(" ")
                 break
-            # break
+            break
 
     elif 'r' in mode:
         os.remove('DC.png')
