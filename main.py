@@ -1,6 +1,51 @@
 import steganography as steg
 import random
 import os
+
+
+def encrypt(text):
+    full = ""
+    alg = {
+        "z": "a",
+        "y": "b",
+        "x": "c",
+        "w": "d",
+        "v": "e",
+        "u": "f",
+        "t": "g",
+        "s": "h",
+        "r": "i",
+        "q": "j",
+        "p": "k",
+        "o": "l",
+        "n": "m",
+        "m": "n",
+        "l": "o",
+        "k": "p",
+        "j": "q",
+        "i": "r",
+        "h": "s",
+        "g": "t",
+        "f": "u",
+        "e": "v",
+        "d": "w",
+        "c": "x",
+        "b": "y",
+        "a": "z",
+        " ": " ",
+        "?": "?",
+        "!": "!",
+        ",": ",",
+    }
+    for decode in text:
+        #respond(alg[decode])
+        if decode not in alg:
+            full += decode
+        else:
+            full += alg[decode]
+    return full
+
+
 steg.selfTest()
 while True:
 
@@ -14,7 +59,7 @@ while True:
                 coverMessage = input('Hidden message?: ')
                 bitUsed = input('Size(1-8): ')
                 colorUsed = input('Color(R,G,B): ')
-                image = steg.encode( imageName, coverMessage, colorUsed + bitUsed )
+                image = steg.encode( imageName, encrypt(coverMessage), colorUsed + bitUsed )
                 coverImage = "DC.png"
                 steg.write(coverImage,image)
                 if count == True:
@@ -24,7 +69,7 @@ while True:
             except KeyboardInterrupt:
                 print(" ")
                 break
-            break
+            # break
 
     elif 'r' in mode:
         os.remove('DC.png')
@@ -48,7 +93,7 @@ while True:
                     if message == "No message found":
                         continue
                     else:
-                        print(message, colorUsed+ str(bitUsed))
+                        print(encrypt(message), message, colorUsed+ str(bitUsed))
         except KeyboardInterrupt:
             continue
         
