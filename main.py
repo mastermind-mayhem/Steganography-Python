@@ -1,9 +1,10 @@
 import steganography as steg
 import random
-import os
+import os, time
+from collections import OrderedDict
 
 
-def encrypt(text):
+def encrypt1(text):
     full = ""
     alg = {
         "z": "a",
@@ -46,29 +47,76 @@ def encrypt(text):
     return full
 
 
+
+def betaencrypt():
+    imageName = "slide.jpg"
+    coverMessage = input('Hidden message?: ')
+    coverMessage = coverMessage.split()
+    if len(coverMessage) >= 25:
+        print('message is too long')
+    else:
+        num = 0
+        bits = [1,2,3,4,5,6,7,8]
+        colors = ['R','G','B']
+        for mess in coverMessage:
+            coverMessage[num]= str(num)+' '+mess
+            num = num + 1
+        for cover in coverMessage:
+            colorUsed = random.choice(colors)
+            bitUsed = str(random.choice(bits))
+            print(colorUsed, bitUsed, cover)
+            image = steg.encode(imageName, encrypt1(cover), colorUsed + bitUsed )
+            coverImage = "DC.png"
+            steg.write(coverImage,image)
+            imageName = "DC.png"
+    
+def betadecrypt():
+    coverImage = 'DC.png'
+    # decodeinst = input('C or G: ')
+    colors ={
+        "R",
+        "G",
+        "B"
+    }
+    messdict= {}
+    message = ''
+    num = 0
+    for colorUsed in colors:
+        for bitUsed in range(8):
+            bitUsed = bitUsed +1
+            # print(bitUsed, colorUsed)
+            num += 1
+            base = num / 24
+            base = base * 100
+            # print(num)
+            print(str(int(base))+'%', end="\r")
+            message = steg.decode(coverImage, colorUsed + str(bitUsed) )
+        
+            if message == "No message found":
+                continue
+            else:
+                message = message.split()
+                messdict[str(int(message[0])+1)] = encrypt1(message[1])
+                # print(messdict)
+            
+            
+    compmessage = ''
+    num = 1
+    for mess in messdict:
+        x = messdict[str(num)]
+        num = num +1
+        compmessage += x
+        compmessage += " "
+    print("Message: "+compmessage)
+
+
 steg.selfTest()
 while True:
 
     mode = input('Decrypt, Encrypt, Or Remove:')
 
     if mode == 'E' or mode =='e':
-        imageName = "slide.jpg"
-        count = False
-        while True:
-            try:
-                coverMessage = input('Hidden message?: ')
-                bitUsed = input('Size(1-8): ')
-                colorUsed = input('Color(R,G,B): ')
-                image = steg.encode( imageName, encrypt(coverMessage), colorUsed + bitUsed )
-                coverImage = "DC.png"
-                steg.write(coverImage,image)
-                if count == True:
-                    continue
-                else:
-                    imageName = "DC.png"
-            except KeyboardInterrupt:
-                print(" ")
-                break
+        betaencrypt()
             # break
 
     elif 'r' in mode:
@@ -76,24 +124,9 @@ while True:
         print('Image Removed')
 
     else:
-        coverImage = input('Photo File Name: ')
-        # decodeinst = input('C or G: ')
-        colors ={
-            "R",
-            "G",
-            "B"
-        }
+       
         try:
-            for colorUsed in colors:
-                for bitUsed in range(8):
-                    bitUsed = bitUsed +1
-                    # print(bitUsed, colorUsed)
-                    message = steg.decode(coverImage, colorUsed + str(bitUsed) )
-                    print(colorUsed + '  -> ', ' Bit Size:',bitUsed)
-                    if message == "No message found":
-                        continue
-                    else:
-                        print(encrypt(message), message, colorUsed+ str(bitUsed))
+            betadecrypt()
         except KeyboardInterrupt:
             continue
         
