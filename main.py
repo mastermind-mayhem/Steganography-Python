@@ -2,53 +2,40 @@ import steganography as steg
 import random
 import os, time
 
-
-def encrypt1(text):
-    full = ""
-    alg = {
-        "z": "a",
-        "y": "b",
-        "x": "c",
-        "w": "d",
-        "v": "e",
-        "u": "f",
-        "t": "g",
-        "s": "h",
-        "r": "i",
-        "q": "j",
-        "p": "k",
-        "o": "l",
-        "n": "m",
-        "m": "n",
-        "l": "o",
-        "k": "p",
-        "j": "q",
-        "i": "r",
-        "h": "s",
-        "g": "t",
-        "f": "u",
-        "e": "v",
-        "d": "w",
-        "c": "x",
-        "b": "y",
-        "a": "z",
-        " ": " ",
-        "?": "?",
-        "!": "!",
-        ",": ",",
-    }
-    for decode in text:
-        #respond(alg[decode])
-        if decode not in alg:
-            full += decode
-        else:
-            full += alg[decode]
-    return full
+def cipher(text, KEY):
+  encrypted = ""
+  for ch in text:
+    if ord(ch) >= ord('a') and ord(ch) <= ord('z'):
+      newCode = ord(ch) + KEY
+      if (newCode > ord('z')):
+        newCode -= 26
+      encrypted += chr(newCode)
+    if ord(ch) >= ord('A') and ord(ch) <= ord('Z'):
+      newCode = ord(ch) + KEY
+      if (newCode > ord('Z')):
+        newCode -= 26
+      encrypted += chr(newCode)
+  return encrypted
 
 
+def decipher(text, KEY):
+  decrypted = ""
+  for ch in text:
+    if ord(ch) >= ord('a') and ord(ch) <= ord('z'):
+      newCode = ord(ch) - KEY
+      if (newCode < ord('a')):
+        newCode += 26
+      decrypted += chr(newCode)
+    if ord(ch) >= ord('A') and ord(ch) <= ord('Z'):
+      newCode = ord(ch) - KEY
+      if (newCode < ord('A')):
+        newCode += 26
+      decrypted += chr(newCode)
+  return decrypted
 
 def betaencrypt():
     imageName = "slide.jpg"
+    KEY = int(input('Key: '))
     coverMessage = input('Hidden message?: ')
     coverMessage = coverMessage.split()
     if len(coverMessage) >= 25:
@@ -59,7 +46,7 @@ def betaencrypt():
         bits = [1,2,3,4,5,6,7,8]
         colors = ['R','G','B']
         for mess in coverMessage:
-            coverMessage[num]= str(num)+' '+mess
+            coverMessage[num]= str(num)+' '+cipher(mess, KEY)
             num = num + 1
         for cover in coverMessage:
             while True:
@@ -78,8 +65,8 @@ def betaencrypt():
                 if new == True:
                     # print('add')
                     bit.append(str(inp))
-                    print(colorUsed + bitUsed, cover)
-                    image = steg.encode(imageName, encrypt1(cover), colorUsed + bitUsed )
+                    print(colorUsed + bitUsed, decipher(cover, KEY))
+                    image = steg.encode(imageName, cover, colorUsed + bitUsed )
                     coverImage = "DC.png"
                     steg.write(coverImage,image)
                     imageName = "DC.png"
@@ -87,6 +74,7 @@ def betaencrypt():
             # time.sleep(5)
     
 def betadecrypt():
+    KEY = int(input('Key: '))
     coverImage = 'DC.png'
     # decodeinst = input('C or G: ')
     colors ={
@@ -95,7 +83,6 @@ def betadecrypt():
         "B"
     }
     messdict= {}
-    message = ''
     num = 0
     for colorUsed in colors:
         for bitUsed in range(8):
@@ -112,7 +99,10 @@ def betadecrypt():
                 continue
             else:
                 message = message.split()
-                messdict[str(int(message[0])+1)] = encrypt1(message[1])
+                # print(message)
+                # print(decipher(message[1], KEY))
+                # print(str(int(message[0])+1))
+                messdict[str(int(message[0])+1)] = decipher(message[1], KEY)
                 # print(messdict)      
     compmessage = ''
     num = 1
@@ -123,24 +113,21 @@ def betadecrypt():
         compmessage += " "
     print("Message: "+compmessage)
 
-def decrypt():
-    coverImage = input('Photo File Name: ')
-    # decodeinst = input('C or G: ')
-    colors ={
-        "R",
-        "G",
-        "B"
-    }
-    for colorUsed in colors:
-                for bitUsed in range(8):
-                    bitUsed = bitUsed +1
-                    # print(bitUsed, colorUsed)
-                    message = steg.decode(coverImage, colorUsed + str(bitUsed) )
-                    print(colorUsed + '  -> ', ' Bit Size:',bitUsed)
-                    if message == "No message found":
-                        continue
-                    else:
-                        print(encrypt1(message), message, colorUsed+ str(bitUsed))
+# def decrypt():
+#     coverImage = input('Photo File Name: ')
+#     KEY = int(input('Key: '))
+#     # decodeinst = input('C or G: ')
+#     colors ={"R","G","B"}
+#     for colorUsed in colors:
+#                 for bitUsed in range(8):
+#                     bitUsed = bitUsed +1
+#                     # print(bitUsed, colorUsed)
+#                     message = steg.decode(coverImage, colorUsed + str(bitUsed) )
+#                     print(colorUsed + '  -> ', ' Bit Size:',bitUsed)
+#                     if message == "No message found":
+#                         continue
+#                     else:
+#                         print(decipher(message, KEY), message, colorUsed+ str(bitUsed))
 
 steg.selfTest()
 while True:
@@ -158,5 +145,3 @@ while True:
             betadecrypt()
         except KeyboardInterrupt:
             continue
-        
-        
