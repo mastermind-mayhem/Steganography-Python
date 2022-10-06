@@ -77,6 +77,9 @@ def betaencrypt():
                     steg.write(coverImage,image)
                     imageName = "DC.png"
                     break
+        print('Loading...', end="\r")
+        time.sleep(5)
+        print('                      ')
         print(etxt)
             # time.sleep(5)
     
