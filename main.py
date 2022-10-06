@@ -132,16 +132,19 @@ def betadecrypt():
 steg.selfTest()
 while True:
     mode = input('Decrypt, Encrypt, Or Remove:')
-    if mode == 'E' or mode =='e':
+    mode = mode.lower()
+    if mode == 'encrypt':
         betaencrypt()
-    elif 'r' in mode:
+    elif 'remove' == mode:
         try:
             os.remove('DC.png')
             print('Image Removed')
         except FileNotFoundError:
             print('No file found')
-    else:
+    elif mode == 'decrypt':
         try:
             betadecrypt()
         except KeyboardInterrupt:
             continue
+    else:
+      print('invalid input, please spell as provided')
