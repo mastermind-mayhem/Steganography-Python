@@ -1,7 +1,7 @@
 
 # It is a library of Python bindings designed to solve computer vision problems.
 import numpy
-import os, subprocess
+import os
 # subprocess.run('python3 -m pip install --upgrade pip', shell=True)
 # subprocess.run('python3 -m pip install --upgrade Pillow', shell=True)
 from PIL import Image
