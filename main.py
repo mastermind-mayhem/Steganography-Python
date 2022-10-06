@@ -2,6 +2,12 @@ import steganography as steg
 import random
 import os, time
 
+etxt = """
+Your message has been encrypted and made into "DC.png", feel free to download and send to your friends 
+"""
+dtxt = """
+Make sure you have uploaded the DC.png to this binder and it is accesible
+"""
 def cipher(text, KEY):
   encrypted = ""
   for ch in text:
@@ -71,9 +77,11 @@ def betaencrypt():
                     steg.write(coverImage,image)
                     imageName = "DC.png"
                     break
+        print(etxt)
             # time.sleep(5)
     
 def betadecrypt():
+    print(dtxt)
     KEY = int(input('Key: '))
     coverImage = 'DC.png'
     # decodeinst = input('C or G: ')
@@ -133,16 +141,16 @@ steg.selfTest()
 while True:
     mode = input('Decrypt, Encrypt, Or Remove:')
     mode = mode.lower()
-    if mode == 'encrypt':
+    if mode == 'encrypt' or mode == 'e':
         betaencrypt()
-    elif 'remove' == mode:
+    elif 'remove' == mode or mode == 'r':
         try:
             os.remove('DC.png')
             print('Image Removed')
         except FileNotFoundError:
             print('No file found')
-    elif mode == 'decrypt':
-        try:
+    elif mode == 'decrypt' or mode == 'd':
+        try: 
             betadecrypt()
         except KeyboardInterrupt:
             continue
